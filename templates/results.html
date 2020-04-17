@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF8"/>
+    <title>Top Movies: Results</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Here are your results!</h1>
+    {% if column1!='movie' %}
+        <table>
+            <tr>
+                <th>{{column1}}</th>
+                <th>{{sort}}</th>
+            </tr>
+            {% for row in results %}
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <table>
+            <tr>
+                <th>rank</th>
+                <th>{{column1}}</th>
+                <th>year</th>
+                <th>box_office</th>
+                <th>director</th>
+            </tr>
+            {% for row in results %}
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]}}</td>
+                <td>{{row[2]}}</td>
+                <td>{{row[3]}}</td>
+                <td>{{row[4]}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>

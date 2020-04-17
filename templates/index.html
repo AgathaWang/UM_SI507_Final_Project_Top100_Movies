@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF8"/>
+    <title>Top movies Home</title>
+</head>
+<body>
+    <h1>Welcome to the Top Movies Browser!</h1>
+
+    <form action='/results' method='POST'>
+    <p>
+    You want to observe: <br/>
+        <input type='radio' name='command'
+            value='movie' checked='checked'/> movie <br/>
+        <input type='radio' name='command'
+            value='director'/> director <br/>
+        <input type='radio' name='command'
+            value='studio'/> studio <br/>
+        <input type='radio' name='command'
+            value='rating'/> rating <br/>       
+    </p>
+    <p>
+    Sort by: <br/>
+        <input type='radio' name='sort' 
+                value='year' checked='checked'/> year <br/>
+        <input type='radio' name='sort' 
+                value='box_office'/> box office <br/>
+        <input type='radio' name='sort' 
+                value='number_of_movies'/> number of movies <br/>
+    </p>
+
+    <p>
+    Sort direction: <br/>
+        <input type='radio' name='dir'
+            value='top' checked='checked'/>High to Low<br/>
+        <input type='radio' name='dir'
+            value='bottom'/>Low to High<br/>
+    </p>
+
+    <p>
+        How many rows do you want? <input name="limit" type="text"/><br/>
+    </p>
+        
+    <p>
+        <input type='checkbox' name='plot'/>Plot results?<br/>
+    </p>
+
+    <input type='submit' value='Get Bars'/>
+
+    </form>
+
+</body>
+</html>
