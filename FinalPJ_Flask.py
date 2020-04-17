@@ -8,216 +8,216 @@ from flask import Flask, render_template, request
 import plotly.graph_objects as go
 
 
-# BASE_URL = 'https://www.rottentomatoes.com'
-# MOVIES_PATH = '/top/bestofrt/'
-# CACHE_FILE_NAME = 'cache.json'
-# CACHE_DICT = {}
-# endpoint_url = 'http://www.omdbapi.com/'
-# omdb_api_key = secret.omdb_api_key
+BASE_URL = 'https://www.rottentomatoes.com'
+MOVIES_PATH = '/top/bestofrt/'
+CACHE_FILE_NAME = 'cache.json'
+CACHE_DICT = {}
+endpoint_url = 'http://www.omdbapi.com/'
+omdb_api_key = secret.omdb_api_key
 
-# def load_cache():
-#     try:
-#         cache_file = open(CACHE_FILE_NAME, 'r')
-#         cache_file_contents = cache_file.read()
-#         cache = json.loads(cache_file_contents)
-#         cache_file.close()
-#     except:
-#         cache = {}
-#     return cache
+def load_cache():
+    try:
+        cache_file = open(CACHE_FILE_NAME, 'r')
+        cache_file_contents = cache_file.read()
+        cache = json.loads(cache_file_contents)
+        cache_file.close()
+    except:
+        cache = {}
+    return cache
 
-# def save_cache(cache):
-#     cache_file = open(CACHE_FILE_NAME, 'w')
-#     contents_to_write = json.dumps(cache)
-#     cache_file.write(contents_to_write)
-#     cache_file.close()
+def save_cache(cache):
+    cache_file = open(CACHE_FILE_NAME, 'w')
+    contents_to_write = json.dumps(cache)
+    cache_file.write(contents_to_write)
+    cache_file.close()
 
-# def make_url_request_using_cache(url, cache):  # cache is a dict
-#     if (url in cache.keys()): # the url is our unique key
-#         print("Using url cache")
-#         return cache[url]
-#     else:
-#         print("Fetching url")
-#         time.sleep(1)
-#         response = requests.get(url)
-#         cache[url] = response.text
-#         save_cache(cache)
-#         return cache[url]
-# #######API################
-# def construct_unique_key(baseurl, params):
-#     param_strings = []
-#     connector = '_'
-#     for k in params.keys():
-#         if k != 'apikey':
-#             param_strings.append(f'{k}_{params[k]}')
-#     param_strings.sort()
-#     unique_key = baseurl + connector + connector.join(param_strings)
-#     return unique_key
+def make_url_request_using_cache(url, cache):  # cache is a dict
+    if (url in cache.keys()): # the url is our unique key
+        print("Using url cache")
+        return cache[url]
+    else:
+        print("Fetching url")
+        time.sleep(1)
+        response = requests.get(url)
+        cache[url] = response.text
+        save_cache(cache)
+        return cache[url]
+#######API################
+def construct_unique_key(baseurl, params):
+    param_strings = []
+    connector = '_'
+    for k in params.keys():
+        if k != 'apikey':
+            param_strings.append(f'{k}_{params[k]}')
+    param_strings.sort()
+    unique_key = baseurl + connector + connector.join(param_strings)
+    return unique_key
 
-# def make_request(baseurl, params):
-#     response = requests.get(endpoint_url, params=params)
-#     return response.json()
+def make_request(baseurl, params):
+    response = requests.get(endpoint_url, params=params)
+    return response.json()
 
-# def make_api_request_using_cache(baseurl, params, cache):
-#     request_key = construct_unique_key(baseurl, params)
-#     if request_key in cache.keys():
-#         print('Using api cache')
-#         return cache[request_key]
-#     else:
-#         print("Fetching api")
-#         cache[request_key] = make_request(baseurl,params)
-#         save_cache(cache)
-#         return cache[request_key]
+def make_api_request_using_cache(baseurl, params, cache):
+    request_key = construct_unique_key(baseurl, params)
+    if request_key in cache.keys():
+        print('Using api cache')
+        return cache[request_key]
+    else:
+        print("Fetching api")
+        cache[request_key] = make_request(baseurl,params)
+        save_cache(cache)
+        return cache[request_key]
 
 
-# ## Load the cache, save in global variable
-# CACHE_DICT = load_cache()
+## Load the cache, save in global variable
+CACHE_DICT = load_cache()
 
-# ## Make the soup for the movies page
-# movies_page_url = BASE_URL + MOVIES_PATH
-# url_text = make_url_request_using_cache(movies_page_url, CACHE_DICT)
-# soup = BeautifulSoup(url_text, 'html.parser')
+## Make the soup for the movies page
+movies_page_url = BASE_URL + MOVIES_PATH
+url_text = make_url_request_using_cache(movies_page_url, CACHE_DICT)
+soup = BeautifulSoup(url_text, 'html.parser')
 
-# top100_movies = {}
-# ## For each movie listed
-# movie_listing_parent = soup.find('table', class_='table')
-# movie_listing_trs = movie_listing_parent.find_all('tr',recursive=False)
+top100_movies = {}
+## For each movie listed
+movie_listing_parent = soup.find('table', class_='table')
+movie_listing_trs = movie_listing_parent.find_all('tr',recursive=False)
 
-# for movie_listing_tr in movie_listing_trs:
-#     movie_rank = movie_listing_tr.find('td',class_='bold').string.strip('.')
-#     movie_name_link = movie_listing_tr.find('a',class_='unstyled articleLink')
-#     movie_name = movie_name_link.string[:-6].strip()
-#     movie_year = movie_name_link.string[-5:-1]
-#     movie_link = movie_name_link['href']  # extract each movie's detail partial url
+for movie_listing_tr in movie_listing_trs:
+    movie_rank = movie_listing_tr.find('td',class_='bold').string.strip('.')
+    movie_name_link = movie_listing_tr.find('a',class_='unstyled articleLink')
+    movie_name = movie_name_link.string[:-6].strip()
+    movie_year = movie_name_link.string[-5:-1]
+    movie_link = movie_name_link['href']  # extract each movie's detail partial url
 
-#     movie_details_url = BASE_URL + movie_link  # the complete url for each movie
+    movie_details_url = BASE_URL + movie_link  # the complete url for each movie
 
-#     ## Make the soup for course details
-#     url_text = make_url_request_using_cache(movie_details_url, CACHE_DICT)
-#     soup = BeautifulSoup(url_text, 'html.parser')
+    ## Make the soup for course details
+    url_text = make_url_request_using_cache(movie_details_url, CACHE_DICT)
+    soup = BeautifulSoup(url_text, 'html.parser')
 
-#     movie_detail_ul = soup.find('ul',class_='content-meta info')
-#     movie_detail_lis = movie_detail_ul.find_all('li', class_='meta-row clearfix',recursive=False)
-#     movie_rating = movie_detail_lis[0].find('div',class_='meta-value').string.split('(')[0].strip()
-#     movie_director = movie_detail_lis[2].find('a').string
-#     movie_director_fname = movie_director.split()[0]
-#     movie_director_lname = movie_director.split()[1]
-#     movie_runtime = int(movie_detail_lis[-2].find('div',class_='meta-value').find('time').string.strip().split()[0])
-#     movie_studio = movie_detail_lis[-1].find('div',class_='meta-value').string.strip()
-#     # get the movie's country and box office
-#     if ',' in movie_name:
-#         search_title = movie_name.split(',')[0]
-#     elif '(' in movie_name:
-#         search_title = movie_name.split('(')[0].strip()
-#     else:
-#         search_title = movie_name
-#     params = {'apikey': omdb_api_key,'t':search_title}
-#     result = make_api_request_using_cache(endpoint_url, params, CACHE_DICT)
-#     movie_country = result["Country"]
-#     if result["BoxOffice"] != 'N/A':
-#         movie_boxoffice = int(''.join(result["BoxOffice"].strip('$').split(',')))
-#     else:
-#         movie_boxoffice = None
+    movie_detail_ul = soup.find('ul',class_='content-meta info')
+    movie_detail_lis = movie_detail_ul.find_all('li', class_='meta-row clearfix',recursive=False)
+    movie_rating = movie_detail_lis[0].find('div',class_='meta-value').string.split('(')[0].strip()
+    movie_director = movie_detail_lis[2].find('a').string
+    movie_director_fname = movie_director.split()[0]
+    movie_director_lname = movie_director.split()[1]
+    movie_runtime = int(movie_detail_lis[-2].find('div',class_='meta-value').find('time').string.strip().split()[0])
+    movie_studio = movie_detail_lis[-1].find('div',class_='meta-value').string.strip()
+    # get the movie's country and box office
+    if ',' in movie_name:
+        search_title = movie_name.split(',')[0]
+    elif '(' in movie_name:
+        search_title = movie_name.split('(')[0].strip()
+    else:
+        search_title = movie_name
+    params = {'apikey': omdb_api_key,'t':search_title}
+    result = make_api_request_using_cache(endpoint_url, params, CACHE_DICT)
+    movie_country = result["Country"]
+    if result["BoxOffice"] != 'N/A':
+        movie_boxoffice = int(''.join(result["BoxOffice"].strip('$').split(',')))
+    else:
+        movie_boxoffice = None
 
-#     top100_movies[movie_name] = [movie_rank,movie_name,movie_year,movie_rating,movie_director_fname,movie_director_lname,
-#         movie_boxoffice,movie_runtime,movie_studio,movie_country]
-# # create database with movie and director tables
-# directors = []
-# movies = []
-# for key in top100_movies.keys():
-#     FLname = [top100_movies[key][4],top100_movies[key][5]]
-#     directors.append(FLname)
-#     movie_info = top100_movies[key]
-#     movies.append(movie_info)
-# # directors is a dict of all directors' name without repetition
-# directors = [list(t) for t in set(tuple(y) for y in directors)]
-# movies = [list(t) for t in set(tuple(y) for y in movies)]
+    top100_movies[movie_name] = [movie_rank,movie_name,movie_year,movie_rating,movie_director_fname,movie_director_lname,
+        movie_boxoffice,movie_runtime,movie_studio,movie_country]
+# create database with movie and director tables
+directors = []
+movies = []
+for key in top100_movies.keys():
+    FLname = [top100_movies[key][4],top100_movies[key][5]]
+    directors.append(FLname)
+    movie_info = top100_movies[key]
+    movies.append(movie_info)
+# directors is a dict of all directors' name without repetition
+directors = [list(t) for t in set(tuple(y) for y in directors)]
+movies = [list(t) for t in set(tuple(y) for y in movies)]
 
-# DB_NAME = 'topmovies.sqlite'
-# def create_db():
-#     conn = sqlite3.connect('topmovies.sqlite')
-#     cur = conn.cursor()
+DB_NAME = 'topmovies.sqlite'
+def create_db():
+    conn = sqlite3.connect('topmovies.sqlite')
+    cur = conn.cursor()
 
-#     drop_movies_sql = 'DROP TABLE IF EXISTS "movie"'
-#     drop_directors_sql = 'DROP TABLE IF EXISTS "director"'
+    drop_movies_sql = 'DROP TABLE IF EXISTS "movie"'
+    drop_directors_sql = 'DROP TABLE IF EXISTS "director"'
     
-#     create_movies_sql = '''
-#         CREATE TABLE IF NOT EXISTS "movie" (
-#             "Rank" INTEGER PRIMARY KEY, 
-#             "Name" TEXT NOT NULL,
-#             "Year" INTEGER NOT NULL, 
-#             "Rating" TEXT NOT NULL,
-#             "Box_office" INTEGER,
-#             "Runtime" INTEGER NOT NULL,
-#             "Studio" TEXT NOT NULL, 
-#             "Country" TEXT NOT NULL,
-#             "DirectorId" INTEGER NOT NULL
-#         )
-#     '''
-#     create_directors_sql = '''
-#         CREATE TABLE IF NOT EXISTS 'director'(
-#             'Id' INTEGER PRIMARY KEY AUTOINCREMENT,
-#             'Fname' TEXT NOT NULL,
-#             'Lname' TEXT NOT NULL
-#         )
-#     '''
-#     cur.execute(drop_movies_sql)
-#     cur.execute(drop_directors_sql)
-#     cur.execute(create_movies_sql)
-#     cur.execute(create_directors_sql)
-#     conn.commit()
-#     conn.close()
+    create_movies_sql = '''
+        CREATE TABLE IF NOT EXISTS "movie" (
+            "Rank" INTEGER PRIMARY KEY, 
+            "Name" TEXT NOT NULL,
+            "Year" INTEGER NOT NULL, 
+            "Rating" TEXT NOT NULL,
+            "Box_office" INTEGER,
+            "Runtime" INTEGER NOT NULL,
+            "Studio" TEXT NOT NULL, 
+            "Country" TEXT NOT NULL,
+            "DirectorId" INTEGER NOT NULL
+        )
+    '''
+    create_directors_sql = '''
+        CREATE TABLE IF NOT EXISTS 'director'(
+            'Id' INTEGER PRIMARY KEY AUTOINCREMENT,
+            'Fname' TEXT NOT NULL,
+            'Lname' TEXT NOT NULL
+        )
+    '''
+    cur.execute(drop_movies_sql)
+    cur.execute(drop_directors_sql)
+    cur.execute(create_movies_sql)
+    cur.execute(create_directors_sql)
+    conn.commit()
+    conn.close()
 
-# def load_directors(): 
-#     insert_director_sql = '''
-#         INSERT INTO director
-#         VALUES (NULL, ?, ?)
-#     '''
+def load_directors(): 
+    insert_director_sql = '''
+        INSERT INTO director
+        VALUES (NULL, ?, ?)
+    '''
 
-#     conn = sqlite3.connect(DB_NAME)
-#     cur = conn.cursor()
-#     for director in directors:
-#         cur.execute(insert_director_sql, director)
-#     conn.commit()
-#     conn.close()
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+    for director in directors:
+        cur.execute(insert_director_sql, director)
+    conn.commit()
+    conn.close()
 
-# def load_movies():
-#     select_director_id_sql = '''
-#         SELECT Id FROM director
-#         WHERE Fname = ? AND Lname = ?
-#     '''
+def load_movies():
+    select_director_id_sql = '''
+        SELECT Id FROM director
+        WHERE Fname = ? AND Lname = ?
+    '''
 
-#     insert_movie_sql = '''
-#         INSERT INTO movie
-#         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-#     '''
-# # ['100', 'I Am Not Your Negro', '2017', 'PG-13', 'Raoul', 'Peck', 7120626, 93, 'Magnolia Pictures', 'Switzerland, France, Belgium, USA']
-#     conn = sqlite3.connect(DB_NAME)
-#     cur = conn.cursor()
-#     for movie in movies:
-#         # get Id for company location
-#         cur.execute(select_director_id_sql, [movie[4],movie[5]])
-#         did = cur.fetchone()
-#         director_id = None  # None is the default value
-#         if did is not None:
-#             director_id = did[0]
+    insert_movie_sql = '''
+        INSERT INTO movie
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    '''
+# ['100', 'I Am Not Your Negro', '2017', 'PG-13', 'Raoul', 'Peck', 7120626, 93, 'Magnolia Pictures', 'Switzerland, France, Belgium, USA']
+    conn = sqlite3.connect(DB_NAME)
+    cur = conn.cursor()
+    for movie in movies:
+        # get Id for company location
+        cur.execute(select_director_id_sql, [movie[4],movie[5]])
+        did = cur.fetchone()
+        director_id = None  # None is the default value
+        if did is not None:
+            director_id = did[0]
 
-#         cur.execute(insert_movie_sql, [
-#             movie[0], # rank
-#             movie[1], # name
-#             movie[2], # year
-#             movie[3], # rating
-#             movie[6], # box_office 
-#             movie[7], # runtime
-#             movie[8], # studio
-#             movie[9], # country
-#             director_id
-#         ])
-#     conn.commit()
-#     conn.close()
+        cur.execute(insert_movie_sql, [
+            movie[0], # rank
+            movie[1], # name
+            movie[2], # year
+            movie[3], # rating
+            movie[6], # box_office 
+            movie[7], # runtime
+            movie[8], # studio
+            movie[9], # country
+            director_id
+        ])
+    conn.commit()
+    conn.close()
 
-# create_db()
-# load_directors()
-# load_movies()
+create_db()
+load_directors()
+load_movies()
 
 # data processing
 valid_command_list = ['movie','director','studio','rating']
@@ -307,6 +307,7 @@ def process_command(command):  # command is a string
     cur.execute(query_total)
     result = cur.fetchall()
     conn.close()
+    print(result)
     return result
 
 # use flask
