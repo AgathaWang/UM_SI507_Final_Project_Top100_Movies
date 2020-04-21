@@ -9,7 +9,7 @@ I stored these data in the topmovies.sqlite database.
 ## Methods
 ### Access the original data
 To extract data from Rotten tomatoes, I use scraping to get each movie’s URL and crawling multiple pages. 
-To access Open Movie Database, I applied for an API key and get the JSON files.
+To access Open Movie Database, I applied for an API key and get the JSON files. In order to run the file, the API key was stored as a variable called omdb_api_key in the secret.py file, which is not uploaded in this repository.
 ### Store the data
 I stored the data into a database using python sqlite3 package. The director table and movie table are created to store the data.
 The DirectorId in the movie table refers to Id in director table.
@@ -37,7 +37,7 @@ Fname|text| the first name of the director
 Lname|text| the last name of the director
 
 ## Interact with the program
-The uses could select the command, sorting method, direction, number of rows, result presentation format through website.
+The users could select the command, sorting method, direction, number of rows, result presentation format through website.
 The command is one of **movie(default), director, studio, and rating**. The presentation formation can be a **table or bar plot**.
 The direction can be **descending(default) or ascending**. 
 The combinition of available commands and attributes are listed in the following table.
