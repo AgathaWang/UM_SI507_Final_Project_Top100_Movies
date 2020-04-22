@@ -43,7 +43,7 @@ Lname|text| the last name of the director
 The users could select the command, sorting method, direction, number of rows, result presentation format through website.
 The command is one of **movie(default), director, studio, and rating**. The presentation formation can be a **table or bar plot**.
 The direction can be **descending(default) or ascending**. 
-The number of rows returned are **10** by default.
+The number of rows returned is **10** by default.
 The combination of available commands and attributes are listed in the following table.
 Command|Valid options|Order by|Returned records
 :-|:-|:-|:-
@@ -52,4 +52,4 @@ director|number of movies or year|number of movies or the minimum year (agg)|dir
 studio|number of movies or year|number of movies or the minimum year (agg)|studio, agg
 rating|number of movies or year or box office|number of movies or the minimum year or the average box office (agg)|rating, agg
 ### Brief instructions for how a user would interact with the program
-The user can select from the website (http://127.0.0.1:5000/) and then click ‘Get Bars’. The result would come out as a table or bar plot.
+The user can select from the website (http://127.0.0.1:5000/) and then click ‘Get Bars’. The result would come out as a table or bar plot. The interaction with the program is demostrated through this video: https://youtu.be/YesMVm_meCY
