@@ -1,12 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-import time
 import json
 import secret
 import sqlite3
 from flask import Flask, render_template, request
 import plotly.graph_objects as go
-
 
 BASE_URL = 'https://www.rottentomatoes.com'
 MOVIES_PATH = '/top/bestofrt/'
@@ -305,7 +303,7 @@ def process_command(command):  # command is a string
     query_total = query_select + query_orderby + ' ' + query_limit
     print(query_total)
     cur.execute(query_total)
-    result = cur.fetchall()
+    result = cur.fetchall()  # a list of tuples
     conn.close()
     print(result)
     return result
